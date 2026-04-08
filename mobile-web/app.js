@@ -1,45 +1,37 @@
 (function () {
-export function $(selector) {
+function $(selector) {
   return document.querySelector(selector);
 }
-
 function startOfDay(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
-
 function addDays(date, count) {
   const result = new Date(date);
   result.setDate(result.getDate() + count);
   return startOfDay(result);
 }
-
 function diffDays(left, right) {
   return Math.round((startOfDay(right) - startOfDay(left)) / 86400000);
 }
-
 function parseDateKey(dateKey) {
   const [year, month, day] = dateKey.split("-").map(Number);
   return new Date(year, month - 1, day);
 }
-
 function formatDateKey(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
-
 function formatTimestamp(date) {
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
   return `${formatDateKey(date)} ${hours}:${minutes}`;
 }
-
 function formatDisplayDate(date) {
   const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
   return `${date.getFullYear()} 年 ${date.getMonth() + 1} 月 ${date.getDate()} 日 ${weekdays[date.getDay()]}`;
 }
-
 function formatClock(date) {
   return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
 }
@@ -47,19 +39,15 @@ function formatClock(date) {
 function millisecondsUntil(target, date) {
   return Math.max(0, target - date);
 }
-
 function timeUntilEndOfDay(date) {
   return millisecondsUntil(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1), date);
 }
-
 function timeUntilEndOfMonth(date) {
   return millisecondsUntil(new Date(date.getFullYear(), date.getMonth() + 1, 1), date);
 }
-
 function timeUntilEndOfYear(date) {
   return millisecondsUntil(new Date(date.getFullYear() + 1, 0, 1), date);
 }
-
 function formatCountdown(ms) {
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
   const hours = Math.floor(totalSeconds / 3600);
@@ -67,30 +55,31 @@ function formatCountdown(ms) {
   const seconds = totalSeconds % 60;
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
-
+function formatDayCountdownDetailed(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours} 小时 ${minutes} 分钟 ${String(seconds).padStart(2, "0")} 秒`;
+}
+function formatRemainingDays(ms) {
+  const totalDays = Math.max(0, Math.ceil(ms / 86400000));
+  return `剩 ${totalDays} 天`;
+}
 function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }
-
 function shorten(value) {
   return value.replace(/\s+/g, " ").trim().slice(0, 48);
 }
 
-import { formatDateKey, startOfDay } from "./utils.js";
-
-const DB_NAME = "zy-diary-db";
-const DB_VERSION = 1;
-const STORE_NAME = "app";
-const STATE_KEY = "state";
-const LEGACY_KEY = "zy-diary-state";
-const RECOVERY_SNAPSHOT_KEY = "zy-diary-recovery-snapshot";
+const DB_NAME = "zy-diary-db";const DB_VERSION = 1;const STORE_NAME = "app";const STATE_KEY = "state";const LEGACY_KEY = "zy-diary-state";const RECOVERY_SNAPSHOT_KEY = "zy-diary-recovery-snapshot";
 const SCHEMA_VERSION = 5;
 const WEEKDAYS = ["一", "二", "三", "四", "五", "六", "日"];
 const THEME_OPTIONS = [
   { value: "dawn", label: "晨雾米金" },
   { value: "ink", label: "夜墨青金" }
 ];
-
 const REALMS = [
   { name: "练气一重", aura: 0, ability: "开启每日复盘" },
   { name: "练气三重", aura: 5, ability: "解锁目标奖励转盘" },
@@ -108,20 +97,7 @@ const REALMS = [
   { name: "准圣", aura: 456, ability: "解锁修行流派称号槽" },
   { name: "半圣", aura: 560, ability: "解锁全局长期主义刻印" },
   { name: "圣人", aura: 680, ability: "解锁终局修行总谱" }
-];
-
-function createGoalSeed(id, name, type, days, rewardPool, penaltyPool, currentDate) {
-  return {
-    id,
-    name,
-    type,
-    completedDates: days.map((day) => `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`),
-    rewardPool,
-    penaltyPool
-  };
-}
-
-function getDefaultState(now = new Date()) {
+];function getDefaultState(now = new Date()) {
   const today = startOfDay(now);
 
   return {
@@ -165,8 +141,6 @@ function getDefaultState(now = new Date()) {
     }
   };
 }
-
-import { REALMS, SCHEMA_VERSION, getDefaultState } from "./constants.js";
 
 function normalizeGoal(goal) {
   const now = new Date();
@@ -218,10 +192,9 @@ function applyGoalLogsToGoals(goals, goalLogs) {
       streakMeta: computeStreakMeta(completedDates)
     };
   });
-}
-
-function migrateLegacyState(state, now = new Date()) {
+}function migrateLegacyState(state, now = new Date()) {
   const next = clone(state);
+  const previousSchemaVersion = Number(next.meta?.schemaVersion || 0);
   next.meta = {
     schemaVersion: SCHEMA_VERSION,
     exportedAt: next.meta?.exportedAt || "",
@@ -317,10 +290,44 @@ function migrateLegacyState(state, now = new Date()) {
   );
 
   next.goals = applyGoalLogsToGoals(next.goals, next.goalLogs);
+  sanitizeLegacyDemoData(next, previousSchemaVersion);
 
   return next;
 }
 
+function sanitizeLegacyDemoData(state, previousSchemaVersion) {
+  const hasRecords = Boolean(
+    state.goals.length ||
+    state.goalLogs.length ||
+    state.expenses.length ||
+    state.recurringExpenses.length ||
+    state.reviewEntries.length ||
+    state.annotations.length ||
+    Object.keys(state.auraEvents || {}).length
+  );
+  if (!hasRecords) return;
+
+  const isLegacySchema = previousSchemaVersion > 0 && previousSchemaVersion < 5;
+  const isDefaultIdentity = (state.settings?.username || "").trim() === "修行者";
+  const hasNoImportTrace = !state.meta?.lastImportedAt;
+  const looksLikeFreshDevice = !state.visit?.lastDate || Number(state.visit?.streak || 0) <= 1;
+  const alreadyCleaned = Boolean(state.meta?.demoAutoCleanedAt);
+
+  if (!isLegacySchema || !isDefaultIdentity || !hasNoImportTrace || !looksLikeFreshDevice || alreadyCleaned) {
+    return;
+  }
+
+  state.goals = [];
+  state.goalLogs = [];
+  state.expenses = [];
+  state.recurringExpenses = [];
+  state.reviewEntries = [];
+  state.annotations = [];
+  state.auraEvents = {};
+  state.review = { win: "", block: "", next: "", summary: "", savedAt: "", rewardedDate: "" };
+  state.activeGoalId = "";
+  state.meta.demoAutoCleanedAt = new Date().toISOString();
+}
 function mergeState(persisted, now = new Date()) {
   const defaults = getDefaultState(now);
   const merged = {
@@ -343,9 +350,7 @@ function mergeState(persisted, now = new Date()) {
   };
 
   return migrateLegacyState(merged, now);
-}
-
-function countCurrentStreak(completedDates, todayKey) {
+}function countCurrentStreak(completedDates, todayKey) {
   let cursor = parseDateKey(todayKey);
   let count = 0;
   while (completedDates.includes(formatDateKey(cursor))) {
@@ -353,9 +358,7 @@ function countCurrentStreak(completedDates, todayKey) {
     cursor = addDays(cursor, -1);
   }
   return count;
-}
-
-function computeRepair(completedDates, todayKey) {
+}function computeRepair(completedDates, todayKey) {
   const dates = completedDates.map(parseDateKey).sort((left, right) => left - right);
   if (!dates.length) return { active: false, base: 0, progress: 0, lastCheckin: "" };
 
@@ -382,9 +385,7 @@ function computeRepair(completedDates, todayKey) {
   bestBeforeBreak = Math.max(bestBeforeBreak, run);
 
   return { active: tail < 3, base: bestBeforeBreak, progress: Math.min(tail, 3), lastCheckin: formatDateKey(last) };
-}
-
-function computeStreakMeta(completedDates, todayKey = formatDateKey(startOfDay(new Date()))) {
+}function computeStreakMeta(completedDates, todayKey = formatDateKey(startOfDay(new Date()))) {
   const dates = completedDates.map(parseDateKey).sort((left, right) => left - right);
   let best = 0;
   let run = 0;
@@ -399,9 +400,7 @@ function computeStreakMeta(completedDates, todayKey = formatDateKey(startOfDay(n
     best,
     repair: computeRepair(completedDates, todayKey)
   };
-}
-
-function syncVisitStreak(state, todayKey) {
+}function syncVisitStreak(state, todayKey) {
   const today = parseDateKey(todayKey);
   const last = state.visit.lastDate;
   if (!last) {
@@ -419,26 +418,18 @@ function syncVisitStreak(state, todayKey) {
   }
   state.visit.lastDate = todayKey;
   state.visit.streak = 1;
-}
-
-function setAuraEvent(state, id, amount, label, todayKey) {
+}function setAuraEvent(state, id, amount, label, todayKey) {
   state.auraEvents[id] = { amount, label, date: todayKey };
-}
-
-function removeAuraEvent(state, id) {
+}function removeAuraEvent(state, id) {
   delete state.auraEvents[id];
-}
-
-function syncAllGoalsBonus(state, todayKey) {
+}function syncAllGoalsBonus(state, todayKey) {
   const allDone = state.goals.length > 0 && state.goals.every((goal) => goal.completedDates.includes(todayKey));
   if (allDone) {
     setAuraEvent(state, `all-goals-${todayKey}`, 3, "完成今日全部目标", todayKey);
   } else {
     removeAuraEvent(state, `all-goals-${todayKey}`);
   }
-}
-
-function getAuraSummary(state) {
+}function getAuraSummary(state) {
   const events = Object.values(state.auraEvents);
   const total = events.reduce((sum, item) => sum + item.amount, 0);
   const realmIndex = REALMS.reduce((result, realm, index) => (total >= realm.aura ? index : result), 0);
@@ -449,9 +440,7 @@ function getAuraSummary(state) {
   const progress = ceiling === base ? 100 : ((total - base) / (ceiling - base)) * 100;
 
   return { total, realmIndex, currentRealm, nextRealm, progress: Math.max(0, Math.min(progress, 100)) };
-}
-
-function buildReviewSummary(win, block, next) {
+}function buildReviewSummary(win, block, next) {
   const partA = win ? `今天推进最明显的是：${shorten(win)}。` : "今天还没有记录清晰的突破点。";
   const partB = block ? `主要阻碍集中在：${shorten(block)}。` : "今天没有记录明显阻碍，整体节奏相对稳定。";
   const partC = next ? `明天最值得优先处理的是：${shorten(next)}。` : "明天的优先事项还需要再明确一下。";
@@ -461,13 +450,9 @@ function buildReviewSummary(win, block, next) {
   if (block && next) tone = "最关键的不是自责，而是把阻碍拆成明天可执行的一步。";
 
   return `${partA}${partB}${partC}${tone}`;
-}
-
-function getReviewEntryByDate(state, dateKey) {
+}function getReviewEntryByDate(state, dateKey) {
   return state.reviewEntries.find((entry) => entry.date === dateKey) || null;
-}
-
-function upsertReviewEntry(state, entry) {
+}function upsertReviewEntry(state, entry) {
   const nextEntry = {
     id: entry.id || `review-entry-${entry.date}`,
     date: entry.date,
@@ -499,20 +484,14 @@ function upsertReviewEntry(state, entry) {
   };
 
   return nextEntry;
-}
-
-function getRecentReviewEntries(state, limit = 6) {
+}function getRecentReviewEntries(state, limit = 6) {
   return state.reviewEntries.slice(0, limit);
-}
-
-function getGoalCompletedDates(state, goalId) {
+}function getGoalCompletedDates(state, goalId) {
   return state.goalLogs
     .filter((log) => log.goalId === goalId && log.status === "done")
     .map((log) => log.date)
     .sort();
-}
-
-function updateGoal(state, goalId, updates) {
+}function updateGoal(state, goalId, updates) {
   state.goals = state.goals.map((goal) =>
     goal.id === goalId
       ? normalizeGoal({
@@ -522,9 +501,7 @@ function updateGoal(state, goalId, updates) {
         })
       : goal
   );
-}
-
-function deleteGoal(state, goalId) {
+}function deleteGoal(state, goalId) {
   state.goals = state.goals.filter((goal) => goal.id !== goalId);
   state.goalLogs = state.goalLogs.filter((log) => log.goalId !== goalId);
   Object.keys(state.auraEvents).forEach((key) => {
@@ -536,13 +513,9 @@ function deleteGoal(state, goalId) {
   if (state.activeGoalId === goalId) {
     state.activeGoalId = state.goals[0]?.id || "";
   }
-}
-
-function isGoalDoneOnDate(state, goalId, dateKey) {
+}function isGoalDoneOnDate(state, goalId, dateKey) {
   return state.goalLogs.some((log) => log.goalId === goalId && log.date === dateKey && log.status === "done");
-}
-
-function toggleGoalLog(state, goalId, dateKey, todayKey = dateKey) {
+}function toggleGoalLog(state, goalId, dateKey, todayKey = dateKey) {
   const existingIndex = state.goalLogs.findIndex((log) => log.goalId === goalId && log.date === dateKey && log.status === "done");
   let doneToday = false;
 
@@ -565,17 +538,11 @@ function toggleGoalLog(state, goalId, dateKey, todayKey = dateKey) {
   );
 
   return doneToday;
-}
-
-function getMonthKey(date = new Date()) {
+}function getMonthKey(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function getBudgetForMonth(state, monthKey) {
+}function getBudgetForMonth(state, monthKey) {
   return state.budgets[monthKey] || { total: 0, categories: {} };
-}
-
-function setBudgetForMonth(state, monthKey, budget) {
+}function setBudgetForMonth(state, monthKey, budget) {
   state.budgets[monthKey] = {
     total: Number(budget.total) || 0,
     categories: {
@@ -587,7 +554,6 @@ function setBudgetForMonth(state, monthKey, budget) {
     }
   };
 }
-
 function upsertRecurringExpense(state, item) {
   const nextItem = {
     id: item.id || `recurring-${Date.now()}`,
@@ -604,11 +570,9 @@ function upsertRecurringExpense(state, item) {
   }
   return nextItem;
 }
-
 function deleteRecurringExpense(state, recurringId) {
   state.recurringExpenses = state.recurringExpenses.filter((item) => item.id !== recurringId);
 }
-
 function syncRecurringExpensesForMonth(state, date = new Date()) {
   const monthKey = getMonthKey(date);
   const year = date.getFullYear();
@@ -634,16 +598,13 @@ function syncRecurringExpensesForMonth(state, date = new Date()) {
 
   return changed;
 }
-
 function getPendingGoalsForDate(state, dateKey) {
   return state.goals.filter((goal) => !isGoalDoneOnDate(state, goal.id, dateKey));
 }
-
 function getRecurringExpensesForDay(state, date = new Date()) {
   const day = date.getDate();
   return state.recurringExpenses.filter((item) => Number(item.day) === day);
 }
-
 function getExpenseSummaryForMonth(state, monthKey) {
   const expenses = state.expenses.filter((expense) => expense.date.startsWith(monthKey));
   const spent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
@@ -652,9 +613,7 @@ function getExpenseSummaryForMonth(state, monthKey) {
     return accumulator;
   }, {});
   return { expenses, spent, byCategory };
-}
-
-function changeMonth(state, delta) {
+}function changeMonth(state, delta) {
   let { year, month } = state.calendarView;
   month += delta;
   if (month < 0) {
@@ -667,8 +626,6 @@ function changeMonth(state, delta) {
   }
   state.calendarView = { year, month };
 }
-
-import { DB_NAME, DB_VERSION, LEGACY_KEY, RECOVERY_SNAPSHOT_KEY, SCHEMA_VERSION, STATE_KEY, STORE_NAME } from "./constants.js";
 
 const NATIVE_STORAGE_MODE_KEY = "zy-diary-native-storage-mode";
 const NATIVE_STORAGE_PRIVATE = "private";
@@ -882,12 +839,10 @@ async function writeNativeRecoverySnapshot(state, mode = getNativeStorageMode())
   };
   await writeNativeJson(NATIVE_SNAPSHOT_FILE, snapshot, mode);
 }
-
 async function initStorage() {
   if (getDesktopBridge() || getFilesystemPlugin()) return;
   db = await openDb();
 }
-
 async function loadPersistedState() {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -900,7 +855,6 @@ async function loadPersistedState() {
 
   return dbGet(STATE_KEY);
 }
-
 async function savePersistedState(state) {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -918,7 +872,6 @@ async function savePersistedState(state) {
   writeLocalRecoverySnapshot(state);
   return dbSet(STATE_KEY, state);
 }
-
 async function resetPersistedState(defaultState) {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -932,7 +885,6 @@ async function resetPersistedState(defaultState) {
   writeLocalRecoverySnapshot(defaultState);
   return dbSet(STATE_KEY, defaultState);
 }
-
 function createExportPayload(state) {
   const payload = clone(state);
   const exportedFrom = getDesktopBridge()
@@ -953,7 +905,6 @@ function createExportPayload(state) {
   };
   return payload;
 }
-
 async function parseImportedFile(file) {
   const text = await file.text();
   const parsed = JSON.parse(text);
@@ -965,7 +916,6 @@ async function parseImportedFile(file) {
   }
   return parsed;
 }
-
 async function getRecoverySnapshotInfo() {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -997,7 +947,6 @@ async function getRecoverySnapshotInfo() {
     return null;
   }
 }
-
 async function getStorageDirectoryInfo() {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -1023,7 +972,6 @@ async function getStorageDirectoryInfo() {
     snapshotFile: ""
   };
 }
-
 async function chooseStorageDirectory(state) {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -1052,7 +1000,6 @@ async function chooseStorageDirectory(state) {
     changedTo: nextMode
   };
 }
-
 async function openStorageDirectory() {
   const desktop = getDesktopBridge();
   if (desktop) {
@@ -1061,8 +1008,6 @@ async function openStorageDirectory() {
 
   return false;
 }
-
-import { $ } from "./utils.js";
 
 function createDust() {
   const canvas = $("#dustCanvas");
@@ -1139,8 +1084,6 @@ function createDust() {
   seedParticles();
   update();
 }
-
-import { addDays, diffDays, formatDateKey, parseDateKey, startOfDay } from "./utils.js";
 
 function startOfWeek(date) {
   const day = date.getDay();
@@ -1287,17 +1230,14 @@ function buildRangeReport(state, start, end, periodName) {
     narrative: buildNarrative(periodName, goals, expenses, aura, reviews)
   };
 }
-
 function getWeeklyReport(state, now = new Date()) {
   const today = startOfDay(now);
   return buildRangeReport(state, startOfWeek(today), endOfWeek(today), "本周");
 }
-
 function getMonthlyReport(state, now = new Date()) {
   const today = startOfDay(now);
   return buildRangeReport(state, startOfMonth(today), endOfMonth(today), "本月");
 }
-
 function formatRangeLabel(start, end) {
   const startDate = parseDateKey(formatDateKey(start));
   const endDate = parseDateKey(formatDateKey(end));
@@ -1415,9 +1355,9 @@ function renderHomeTimePanel(context) {
 
   if (dateText) dateText.textContent = formatDisplayDate(now);
   if (timeText) timeText.textContent = formatClock(now);
-  if (dayLeft) dayLeft.textContent = formatCountdown(timeUntilEndOfDay(now));
-  if (monthLeft) monthLeft.textContent = formatCountdown(timeUntilEndOfMonth(now));
-  if (yearLeft) yearLeft.textContent = formatCountdown(timeUntilEndOfYear(now));
+  if (dayLeft) dayLeft.textContent = formatDayCountdownDetailed(timeUntilEndOfDay(now));
+  if (monthLeft) monthLeft.textContent = formatRemainingDays(timeUntilEndOfMonth(now));
+  if (yearLeft) yearLeft.textContent = formatRemainingDays(timeUntilEndOfYear(now));
   if (visit) visit.textContent = `${context.state.visit.streak} \u5929`;
 }
 
@@ -1648,8 +1588,6 @@ function initReviewPage(context) {
   context.updateRealmWidgets();
 }
 
-import { WEEKDAYS } from "../core/constants.js";
-
 function parsePoolInput(value, fallback) {
   const items = value.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
   return items.length ? items : fallback;
@@ -1658,7 +1596,6 @@ function parsePoolInput(value, fallback) {
 function formatPoolInput(pool) {
   return (pool || []).join("\n");
 }
-
 function initGoalsPage(context) {
   if (document.body.dataset.page !== "goals") return;
 
@@ -2391,7 +2328,7 @@ function formatMonthTitle(date) {
   return `${date.getFullYear()} 年 ${date.getMonth() + 1} 月`;
 }
 
-export function initReportsPage(context) {
+function initReportsPage(context) {
   if (document.body.dataset.page !== "reports") return;
 
   const weeklyButton = document.querySelector("#weeklyReportButton");
@@ -2498,8 +2435,6 @@ function renderAuraBoard(report) {
     target.appendChild(article);
   });
 }
-
-import { getDefaultState } from "../core/constants.js";
 
 function initProfilePage(context) {
   if (document.body.dataset.page !== "profile") return;
@@ -2678,7 +2613,7 @@ function initProfilePage(context) {
   });
 
   resetDemoButton.addEventListener("click", async () => {
-    if (!window.confirm("这会用演示数据覆盖当前本地数据，是否继续？")) return;
+    if (!window.confirm("这会恢复为空白初始状态并清空当前记录，是否继续？")) return;
     const nextState = mergeState(getDefaultState());
     context.replaceState(nextState);
     usernameInput.value = context.getUserName();
@@ -2758,8 +2693,6 @@ function initProfilePage(context) {
     }
   }
 }
-
-import { REALMS, getDefaultState } from "./core/constants.js";
 
 const today = startOfDay(new Date());
 const todayKey = formatDateKey(today);
