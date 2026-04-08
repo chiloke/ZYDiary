@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 消费记录</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="ledger">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">总览</a>
+        <a class="nav-link" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link" href="./goals.html">目标</a>
+        <a class="nav-link active" href="./ledger.html">账本</a>
+        <a class="nav-link" href="./reports.html">报告</a>
+        <a class="nav-link" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <main class="content-grid">
+      <section class="panel glass">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">新增消费</p>
+            <h2>把每一笔支出记清楚</h2>
+          </div>
+        </div>
+        <form class="stack-form">
+          <label>
+            <span>消费名称</span>
+            <input id="expenseTitleInput" type="text" placeholder="例如：晚饭">
+          </label>
+          <label>
+            <span>消费类别</span>
+            <select id="expenseCategoryInput">
+              <option value="饮食">饮食</option>
+              <option value="学习">学习</option>
+              <option value="出行">出行</option>
+              <option value="娱乐">娱乐</option>
+              <option value="生活">生活</option>
+            </select>
+          </label>
+          <label>
+            <span>金额</span>
+            <input id="expenseAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </label>
+          <div class="form-actions">
+            <button class="button primary" id="addExpenseButton" type="button">新增消费</button>
+            <span class="inline-message" id="expenseFormMessage">消费数据会保存在本地浏览器</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">预算系统</p>
+            <h2>为本月设置花费边界</h2>
+          </div>
+        </div>
+        <form class="stack-form">
+          <label>
+            <span>月总预算</span>
+            <input id="budgetTotalInput" type="number" min="0" step="0.01" placeholder="3000">
+          </label>
+          <label>
+            <span>饮食预算</span>
+            <input id="budgetFoodInput" type="number" min="0" step="0.01" placeholder="900">
+          </label>
+          <label>
+            <span>学习预算</span>
+            <input id="budgetStudyInput" type="number" min="0" step="0.01" placeholder="500">
+          </label>
+          <label>
+            <span>出行预算</span>
+            <input id="budgetTravelInput" type="number" min="0" step="0.01" placeholder="300">
+          </label>
+          <label>
+            <span>娱乐预算</span>
+            <input id="budgetFunInput" type="number" min="0" step="0.01" placeholder="400">
+          </label>
+          <label>
+            <span>生活预算</span>
+            <input id="budgetLifeInput" type="number" min="0" step="0.01" placeholder="600">
+          </label>
+          <div class="form-actions">
+            <button class="button primary" id="saveBudgetButton" type="button">保存预算</button>
+            <span class="inline-message" id="budgetFormMessage">预算会按月份保存，方便长期复盘。</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">固定消费</p>
+            <h2>把每月重复出现的项目收进系统</h2>
+          </div>
+        </div>
+        <form class="stack-form">
+          <label>
+            <span>项目名称</span>
+            <input id="recurringTitleInput" type="text" placeholder="例如：房租 / 视频会员">
+          </label>
+          <label>
+            <span>类别</span>
+            <select id="recurringCategoryInput">
+              <option value="生活">生活</option>
+              <option value="饮食">饮食</option>
+              <option value="学习">学习</option>
+              <option value="出行">出行</option>
+              <option value="娱乐">娱乐</option>
+            </select>
+          </label>
+          <label>
+            <span>金额</span>
+            <input id="recurringAmountInput" type="number" min="0" step="0.01" placeholder="0.00">
+          </label>
+          <label>
+            <span>每月记账日期</span>
+            <select id="recurringDayInput">
+              <option value="1">每月 1 日</option>
+              <option value="3">每月 3 日</option>
+              <option value="5">每月 5 日</option>
+              <option value="10">每月 10 日</option>
+              <option value="15">每月 15 日</option>
+              <option value="20">每月 20 日</option>
+              <option value="25">每月 25 日</option>
+              <option value="28">每月 28 日</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button class="button primary" id="saveRecurringButton" type="button">保存固定消费</button>
+            <button class="button ghost" id="syncRecurringButton" type="button">同步当月固定消费</button>
+          </div>
+          <span class="inline-message" id="recurringFormMessage">固定消费会在对应月份自动生成到账本中。</span>
+        </form>
+        <div class="expense-list recurring-list" id="recurringExpenseList"></div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">资源流向</p>
+            <h1 class="page-title">消费列表与统计图表</h1>
+          </div>
+          <div class="calendar-nav">
+            <button class="button ghost small" id="ledgerPrevMonthButton" type="button">上月</button>
+            <strong id="ledgerMonthTitle">当前月份</strong>
+            <button class="button ghost small" id="ledgerNextMonthButton" type="button">下月</button>
+          </div>
+        </div>
+        <div class="streak-bar">
+          <article class="streak-card">
+            <span>本月已消费</span>
+            <strong id="budgetSpentText">¥0</strong>
+          </article>
+          <article class="streak-card">
+            <span>本月剩余</span>
+            <strong id="budgetRemainingText">¥0</strong>
+          </article>
+          <article class="streak-card">
+            <span>预算使用率</span>
+            <strong id="budgetUsageText">0%</strong>
+          </article>
+        </div>
+        <div class="budget-category-grid" id="budgetCategoryGrid"></div>
+        <div class="ledger-toolbar">
+          <div class="toggle-group">
+            <button class="toggle active" data-view="list" type="button">列表</button>
+            <button class="toggle" data-view="chart" type="button">图表</button>
+          </div>
+          <div class="toggle-group ledger-filters">
+            <select id="expenseFilterCategory">
+              <option value="all">全部类别</option>
+              <option value="饮食">饮食</option>
+              <option value="学习">学习</option>
+              <option value="出行">出行</option>
+              <option value="娱乐">娱乐</option>
+              <option value="生活">生活</option>
+            </select>
+            <input id="expenseSearchInput" type="text" placeholder="搜索消费名称">
+          </div>
+          <div class="legend" id="ledgerLegend"></div>
+        </div>
+        <div class="ledger-layout">
+          <div class="ledger-list active" id="listView">
+            <div class="expense-list" id="expenseList"></div>
+          </div>
+          <div class="ledger-chart" id="chartView">
+            <div class="chart-panel">
+              <p class="chart-title">最近 6 笔金额走势</p>
+              <div class="bar-chart" id="barChart"></div>
+            </div>
+            <div class="chart-panel">
+              <p class="chart-title">类别占比</p>
+              <div class="pie-chart" id="pieChart"></div>
+              <div class="pie-legend" id="pieLegend"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+
+

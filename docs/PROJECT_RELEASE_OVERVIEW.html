@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZY Diary 1.0.1 项目说明</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --text: #1a1815;
+      --muted: #5d564b;
+      --line: #d9d0c4;
+      --accent: #234c3a;
+      --paper: #fcf8f1;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: var(--paper);
+      line-height: 1.75;
+    }
+    main {
+      width: min(920px, calc(100% - 64px));
+      margin: 0 auto;
+      padding: 48px 0 64px;
+    }
+    h1, h2, h3 {
+      font-family: "STSong", "Songti SC", "Noto Serif CJK SC", serif;
+      margin: 0 0 14px;
+      line-height: 1.25;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 1.45rem;
+      margin-top: 34px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    p, li { font-size: 1rem; }
+    .lead {
+      color: var(--muted);
+      font-size: 1.08rem;
+      margin-bottom: 22px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 22px 0 8px;
+    }
+    .meta article {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fffdf9;
+    }
+    .meta strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+    ul, ol {
+      margin: 10px 0 0;
+      padding-left: 1.2rem;
+    }
+    code, pre {
+      font-family: "Consolas", "Courier New", monospace;
+    }
+    pre {
+      white-space: pre-wrap;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f4eee4;
+      border: 1px solid #e0d8cb;
+    }
+    .footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ZY Diary</h1>
+    <p class="lead">ZY Diary 是一套面向长期生活管理的个人系统，围绕每日记录、往日复盘、目标打卡、消费账本、周期报告、提醒机制与本地数据管理展开，提供桌面版与安卓版双端体验。</p>
+
+    <div class="meta">
+      <article><strong>当前版本</strong><span>1.0.1</span></article>
+      <article><strong>应用名称</strong><span>ZY Diary</span></article>
+      <article><strong>Windows 应用标识</strong><span>com.zydiary.desktop</span></article>
+      <article><strong>Android 包名</strong><span>com.zydiary.mobile</span></article>
+    </div>
+
+    <h2>项目定位</h2>
+    <p>这个项目希望解决的不是“如何多记一点东西”，而是“如何把生活中的记录、行动、消费和反思，慢慢沉淀成可回看、可追踪、可恢复的长期轨迹”。</p>
+
+    <h2>核心功能</h2>
+    <ul>
+      <li>每日记录：记录完成事项、阻碍、下一步，以及情绪、精力、专注度。</li>
+      <li>往日复盘：查看最近六条记录，并通过日历回溯历史内容。</li>
+      <li>目标系统：支持创建目标、按月打卡、自定义奖励与惩罚转盘。</li>
+      <li>账本预算：支持消费记录、月预算、分类预算、固定消费与月份切换。</li>
+      <li>周期报告：自动生成周报和月报，汇总目标、消费、灵气和复盘变化。</li>
+      <li>个性化设置：支持用户名、主题切换、帮助中心与首页首次引导卡。</li>
+      <li>数据管理：支持本地存储、导出备份、导入恢复、快照查看与跨平台存储模式。</li>
+    </ul>
+
+    <h2>平台发布信息</h2>
+    <ul>
+      <li>Windows 安装包：dist/ZY-Diary-Setup-1.0.1.exe</li>
+      <li>Android Release APK：android/app/build/outputs/apk/release/app-release.apk</li>
+    </ul>
+
+    <h2>推荐使用流程</h2>
+    <ol>
+      <li>进入档案页设置用户名、主题和提醒时间。</li>
+      <li>进入目标页创建 2 到 5 个日常目标。</li>
+      <li>进入记录页写下第一条正式记录。</li>
+      <li>进入帮助页了解页面结构、提醒机制和数据说明。</li>
+      <li>后续通过报告页持续观察自己的周期变化。</li>
+    </ol>
+
+    <h2>数据安全说明</h2>
+    <ul>
+      <li>桌面版支持本地目录存储，并可查看和切换数据目录。</li>
+      <li>安卓支持应用私有目录和设备文档目录两种模式。</li>
+      <li>建议在升级版本、迁移设备或做大规模调整前先导出一次 JSON 备份。</li>
+      <li>项目已接入恢复快照机制，可在档案页查看恢复信息。</li>
+    </ul>
+
+    <h2>开发与构建</h2>
+    <p>桌面版开发：</p>
+    <pre>npm install
+npm run dev</pre>
+    <p>打包 Windows 安装包：</p>
+    <pre>npm install
+npm run dist</pre>
+    <p>同步安卓资源：</p>
+    <pre>npm install
+npm run android:prepare
+npm run android:sync</pre>
+    <p>构建 Android Release APK：</p>
+    <pre>cd android
+./gradlew assembleRelease</pre>
+
+    <h2>发布清单</h2>
+    <ul>
+      <li>Windows 安装包可正常安装、启动和卸载。</li>
+      <li>Android Release APK 可正常安装、启动和保存数据。</li>
+      <li>首页引导卡、帮助中心、用户名、提醒与主题切换工作正常。</li>
+      <li>目标、账本、报告、档案和数据导出导入功能可用。</li>
+      <li>发布产物版本号与项目说明版本号一致。</li>
+    </ul>
+
+    <p class="footer">ZY Diary 1.0.1 · Generated for release and project presentation.</p>
+  </main>
+</body>
+</html>

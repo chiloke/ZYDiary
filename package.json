@@ -1,0 +1,75 @@
+{
+  "name": "zy-diary",
+  "version": "1.0.1",
+  "description": "ZY Diary 1.0.1 release for daily records, goals, reports, finance, onboarding, and help center.",
+  "main": "electron/main.js",
+  "author": "ZY Diary",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win nsis",
+    "android:prepare": "node tools/prepare-mobile.js",
+    "android:add": "npm run android:prepare && npx cap add android",
+    "android:sync": "npm run android:prepare && npx cap sync android",
+    "android:open": "npx cap open android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2",
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "appId": "com.zydiary.desktop",
+    "productName": "ZY Diary",
+    "copyright": "Copyright (C) 2026 ZY Diary",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "*.html",
+      "styles.css",
+      "app.js",
+      "assets/**/*",
+      "electron/**/*",
+      "build/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "ZY-Diary-Setup-${version}.${ext}",
+      "icon": "build/icon.ico",
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "ZY Diary",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "installerSidebar": "build/installer-header.png",
+      "uninstallerSidebar": "build/installer-header.png"
+    }
+  },
+  "dependencies": {
+    "@capacitor/filesystem": "^7.1.8",
+    "@capacitor/local-notifications": "^7.0.6"
+  }
+}

@@ -1,0 +1,17 @@
+﻿{
+  "name": "ZY Diary",
+  "short_name": "ZY Diary",
+  "description": "每日记录、目标打卡、账本与成长反馈的长期主义系统。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#efe9df",
+  "theme_color": "#efe9df",
+  "icons": [
+    {
+      "src": "./build/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

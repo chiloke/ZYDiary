@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 每日记录</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="daily">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">总览</a>
+        <a class="nav-link active" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link" href="./goals.html">目标</a>
+        <a class="nav-link" href="./ledger.html">账本</a>
+        <a class="nav-link" href="./reports.html">报告</a>
+        <a class="nav-link" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <main class="content-grid">
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">每日记录</p>
+            <h1 class="page-title">专注写下今天发生了什么</h1>
+          </div>
+          <span class="section-hint">这里只处理今天的正式记录，方便形成稳定节奏。</span>
+        </div>
+        <div class="review-layout">
+          <form class="review-form review-editor-card">
+            <div class="review-date-row">
+              <article class="status-chip wide">
+                <span>记录日期</span>
+                <strong>今天</strong>
+              </article>
+            </div>
+            <label>
+              <span>今天最重要的完成事项</span>
+              <textarea id="dailyWin" placeholder="记录今天最值得被记住的一次推进..."></textarea>
+            </label>
+            <label>
+              <span>今天卡住的地方</span>
+              <textarea id="dailyBlock" placeholder="哪些问题拖慢了节奏？"></textarea>
+            </label>
+            <label>
+              <span>下一步优先事项</span>
+              <textarea id="dailyNext" placeholder="给明天留下一个清晰起点。"></textarea>
+            </label>
+            <div class="status-select-grid">
+              <label>
+                <span>情绪</span>
+                <select id="dailyMood">
+                  <option value="松弛">松弛</option>
+                  <option value="平静">平静</option>
+                  <option value="愉快">愉快</option>
+                  <option value="焦虑">焦虑</option>
+                  <option value="疲惫">疲惫</option>
+                </select>
+              </label>
+              <label>
+                <span>精力</span>
+                <select id="dailyEnergy">
+                  <option value="充沛">充沛</option>
+                  <option value="稳定">稳定</option>
+                  <option value="偏低">偏低</option>
+                  <option value="涣散">涣散</option>
+                </select>
+              </label>
+              <label>
+                <span>专注度</span>
+                <select id="dailyFocus">
+                  <option value="专注">专注</option>
+                  <option value="还行">还行</option>
+                  <option value="分心">分心</option>
+                  <option value="漂移">漂移</option>
+                </select>
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="button primary" id="saveDailyButton" type="button">保存今日记录</button>
+              <span class="inline-message" id="dailySavedMessage">今天还没有保存记录</span>
+            </div>
+          </form>
+          <aside class="review-side">
+            <article class="insight-card">
+              <p class="insight-label">自动摘要</p>
+              <div class="summary-box" id="dailySummary">还没有今日记录。写下今天最重要的推进和下一步，会更容易形成连续感。</div>
+            </article>
+            <article class="insight-card">
+              <p class="insight-label">今日境界</p>
+              <div class="status-stack">
+                <strong id="dailyRealm">练气一重</strong>
+                <span id="dailyAura">灵气 0</span>
+              </div>
+            </article>
+            <article class="insight-card">
+              <p class="insight-label">今日状态</p>
+              <div class="status-trace" id="dailyStatusTrace">
+                <span class="tag">情绪：平静</span>
+                <span class="tag">精力：稳定</span>
+                <span class="tag">专注：专注</span>
+              </div>
+            </article>
+            <article class="insight-card">
+              <p class="insight-label">记录提示</p>
+              <blockquote>把今天写清楚，明天就不会从混乱里重新起步。</blockquote>
+            </article>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+

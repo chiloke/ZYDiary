@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 长期主义修行</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="home">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link active" href="./index.html">总览</a>
+        <a class="nav-link" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link" href="./goals.html">目标</a>
+        <a class="nav-link" href="./ledger.html">账本</a>
+        <a class="nav-link" href="./reports.html">报告</a>
+        <a class="nav-link" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <section class="home-hero">
+      <article class="hero hero-main glass">
+        <div class="hero-copy">
+          <p class="eyebrow">Daily Review · Goal Check · Ledger · Cultivation</p>
+          <h1>把自我管理做成一场可见、可成长、可沉浸的长期修行。</h1>
+          <p class="hero-text">
+            每日复盘负责沉淀认知，目标打卡负责稳定节奏，消费记录负责看见资源流向，
+            修行档案则把每一次坚持都转化成看得见的成长反馈。
+          </p>
+          <p class="hero-greeting"><span data-username-text>修行者</span>，今天也要好好生活。</p>
+          <div class="hero-actions">
+            <a class="button primary" href="./daily.html">开始今日记录</a>
+            <a class="button ghost" href="./profile.html">查看修行进度</a>
+          </div>
+        </div>
+      </article>
+
+      <aside class="home-side">
+        <article class="stat-card glass home-realm-card">
+          <span class="card-label">今日状态</span>
+          <div class="overview-grid">
+            <div><strong id="todayGoalCount">0</strong><span>今日完成目标</span></div>
+            <div><strong id="todayExpenseAmount">¥0</strong><span>今日消费</span></div>
+            <div><strong id="todayAuraGain">0</strong><span>今日灵气增长</span></div>
+            <div><strong id="currentRealm">练气一重</strong><span>当前境界</span></div>
+          </div>
+        </article>
+
+        <article class="panel glass home-time-panel">
+          <div class="section-head compact">
+            <div>
+              <p class="section-tag">时间总览</p>
+              <h2>今天与长期主义的刻度</h2>
+            </div>
+          </div>
+          <div class="time-grid">
+            <article class="time-card wide">
+              <span>当前日期</span>
+              <strong id="currentDateText">--</strong>
+              <em id="currentTimeText">--:--</em>
+            </article>
+            <article class="time-card">
+              <span>今日倒计时</span>
+              <strong id="dayHoursLeft">00:00:00</strong>
+            </article>
+            <article class="time-card">
+              <span>本月倒计时</span>
+              <strong id="monthHoursLeft">00:00:00</strong>
+            </article>
+            <article class="time-card">
+              <span>本年倒计时</span>
+              <strong id="yearHoursLeft">00:00:00</strong>
+            </article>
+            <article class="time-card">
+              <span>连续访问</span>
+              <strong id="visitStreak">0 天</strong>
+            </article>
+          </div>
+        </article>
+      </aside>
+    </section>
+
+    <main class="content-grid">
+      <section class="panel glass span-2 onboarding-panel" id="onboardingPanel" hidden>
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">首次引导</p>
+            <h2>先完成这 4 步，就能顺手开始使用</h2>
+          </div>
+          <span class="section-hint" id="onboardingProgressText">0 / 4 已完成</span>
+        </div>
+        <div class="onboarding-grid" id="onboardingGrid"></div>
+        <div class="form-actions onboarding-actions">
+          <a class="button ghost" href="./help.html">查看完整帮助</a>
+          <button class="button ghost" id="dismissOnboardingButton" type="button">暂时隐藏</button>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">修行入口</p>
+            <h2>今天最值得进入的四条路径</h2>
+          </div>
+        </div>
+        <div class="feature-grid home-feature-grid">
+          <a class="feature-card feature-card-primary" href="./review.html">
+            <p class="section-tag">Page 01</p>
+            <h3>每日记录与往日复盘</h3>
+            <p>把今天的正式记录写下来，再通过独立复盘页回看最近六条和日历中的特定日期。</p>
+          </a>
+          <a class="feature-card" href="./goals.html">
+            <p class="section-tag">Page 02</p>
+            <h3>目标打卡与奖励惩罚</h3>
+            <p>新增学习、运动、习惯等目标，按月历查看完成情况，并依据当天表现触发奖励或惩罚。</p>
+          </a>
+          <a class="feature-card" href="./ledger.html">
+            <p class="section-tag">Page 03</p>
+            <h3>消费记录与统计图表</h3>
+            <p>支持新增消费、分类查看、列表浏览与图表洞察，帮助你看清资源分布。</p>
+          </a>
+          <a class="feature-card" href="./reports.html">
+            <p class="section-tag">Page 04</p>
+            <h3>周报月报与周期洞察</h3>
+            <p>把目标、消费、灵气和复盘汇总成周期总结，看见这一周和这个月真正发生了什么。</p>
+          </a>
+          <a class="feature-card" href="./profile.html">
+            <p class="section-tag">Page 05</p>
+            <h3>修行者档案与成长机制</h3>
+            <p>把打卡与复盘沉淀为灵气，随着境界突破逐步解锁新的成长反馈。</p>
+          </a>
+          <a class="feature-card" href="./help.html">
+            <p class="section-tag">Page 06</p>
+            <h3>帮助中心与使用说明</h3>
+            <p>第一次使用也能快速上手，集中查看产品功能介绍、推荐流程、提醒与备份说明。</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">近期修行</p>
+            <h2>灵气脉络</h2>
+          </div>
+        </div>
+        <div class="mini-timeline" id="auraTimeline"></div>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">已解锁能力</p>
+            <h2>当前掌握</h2>
+          </div>
+        </div>
+        <div class="unlock-list" id="unlockedAbilities"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+
+
+
