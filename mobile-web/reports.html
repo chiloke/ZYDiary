@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 周报月报</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="reports">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">总览</a>
+        <a class="nav-link" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link" href="./goals.html">目标</a>
+        <a class="nav-link" href="./ledger.html">账本</a>
+        <a class="nav-link active" href="./reports.html">报告</a>
+        <a class="nav-link" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <main class="content-grid">
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag" id="reportPeriodTag">周报</p>
+            <h1 class="page-title" id="reportTitle">这一周的修行总结</h1>
+          </div>
+          <span class="section-hint" id="reportRange">--</span>
+        </div>
+        <div class="report-toolbar">
+          <button class="toggle active" id="weeklyReportButton" type="button">查看周报</button>
+          <button class="toggle" id="monthlyReportButton" type="button">查看月报</button>
+        </div>
+        <div class="report-hero">
+          <article class="summary-box report-summary-box" id="reportNarrative"></article>
+          <div class="report-metrics">
+            <article class="time-card">
+              <span>目标打卡</span>
+              <strong id="reportGoalCheckins">0</strong>
+            </article>
+            <article class="time-card">
+              <span>活跃目标</span>
+              <strong id="reportActiveGoals">0</strong>
+            </article>
+            <article class="time-card">
+              <span>周期支出</span>
+              <strong id="reportExpenseTotal">¥0</strong>
+            </article>
+            <article class="time-card">
+              <span>灵气增长</span>
+              <strong id="reportAuraTotal">0</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">目标洞察</p>
+            <h2>这一周期的坚持分布</h2>
+          </div>
+        </div>
+        <p class="inline-message report-inline" id="reportGoalInsight"></p>
+        <div class="mini-timeline" id="reportGoalBoard"></div>
+      </section>
+
+      <section class="panel glass">
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">消费洞察</p>
+            <h2>资源流向摘要</h2>
+          </div>
+        </div>
+        <p class="inline-message report-inline" id="reportExpenseInsight"></p>
+        <div class="mini-timeline" id="reportExpenseBoard"></div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head compact">
+          <div>
+            <p class="section-tag">灵气与复盘</p>
+            <h2>成长反馈</h2>
+          </div>
+        </div>
+        <div class="report-dual-grid">
+          <article class="insight-card">
+            <p class="insight-label">灵气来源</p>
+            <p class="inline-message report-inline" id="reportAuraInsight"></p>
+            <div class="mini-timeline" id="reportAuraBoard"></div>
+          </article>
+          <article class="insight-card">
+            <p class="insight-label">复盘摘记</p>
+            <div class="summary-box report-review-box" id="reportReviewInsight"></div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+
+

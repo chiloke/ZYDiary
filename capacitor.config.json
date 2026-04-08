@@ -1,0 +1,12 @@
+﻿{
+  "appId": "com.zydiary.mobile",
+  "appName": "ZY Diary",
+  "webDir": "mobile-web",
+  "bundledWebRuntime": false,
+  "android": {
+    "backgroundColor": "#efe9df",
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  }
+}

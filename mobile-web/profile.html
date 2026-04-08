@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 修行者档案</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="profile">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">总览</a>
+        <a class="nav-link" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link" href="./goals.html">目标</a>
+        <a class="nav-link" href="./ledger.html">账本</a>
+        <a class="nav-link" href="./reports.html">报告</a>
+        <a class="nav-link active" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <main class="content-grid profile-content-grid">
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">修行者</p>
+            <h1 class="page-title">个人档案</h1>
+          </div>
+        </div>
+        <div class="cultivator-card cultivator-card-wide">
+          <div class="avatar-orbit" id="avatarStage">
+            <div class="avatar-core" id="avatarCore"></div>
+          </div>
+          <div class="cultivator-meta">
+            <strong id="profileRealm">练气一重</strong>
+            <span id="profileAura">灵气 0 / 5</span>
+            <div class="progress-shell">
+              <div class="progress-bar" id="realmProgress"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">身份设定</p>
+            <h2>给这段生活一个名字</h2>
+          </div>
+          <span class="section-hint">开屏问候和页面中的称呼会跟随用户名同步更新。</span>
+        </div>
+        <div class="storage-directory-card identity-card">
+          <div>
+            <strong>当前用户名</strong>
+            <p class="storage-directory-path"><span data-username-text>修行者</span>，今天也要好好生活。</p>
+          </div>
+          <div class="identity-form-inline">
+            <input id="usernameInput" type="text" placeholder="输入你的用户名">
+            <button class="button primary" id="saveUsernameButton" type="button">保存用户名</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">界面主题</p>
+            <h2>给你的修行系统换一层气质</h2>
+          </div>
+          <span class="section-hint">两套主题都会影响页面背景、按钮、卡片和选择栏质感。</span>
+        </div>
+        <div class="storage-directory-card identity-card">
+          <div>
+            <strong>当前主题</strong>
+            <p class="storage-directory-path" id="themeDescription">晨雾米金</p>
+          </div>
+          <div class="identity-form-inline">
+            <select id="themeSelect">
+              <option value="dawn">晨雾米金</option>
+              <option value="ink">夜墨青金</option>
+            </select>
+            <button class="button primary" id="saveThemeButton" type="button">保存主题</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">轻提醒</p>
+            <h2>让系统在合适的时候轻轻提醒你</h2>
+          </div>
+          <span class="section-hint">提醒默认走应用内横幅；如果浏览器或桌面允许，也可以尝试发送系统通知。</span>
+        </div>
+        <div class="stack-form reminder-settings-form">
+          <label class="toggle-row">
+            <span>启用轻提醒</span>
+            <input id="reminderEnabledInput" type="checkbox" checked>
+          </label>
+          <div class="status-select-grid reminder-grid">
+            <label>
+              <span>每日记录提醒</span>
+              <div class="reminder-inline">
+                <input id="dailyReminderEnabledInput" type="checkbox" checked>
+                <input id="dailyReminderTimeInput" type="time" value="21:30">
+              </div>
+            </label>
+            <label>
+              <span>目标未完成提醒</span>
+              <div class="reminder-inline">
+                <input id="goalsReminderEnabledInput" type="checkbox" checked>
+                <input id="goalsReminderTimeInput" type="time" value="20:30">
+              </div>
+            </label>
+            <label>
+              <span>固定消费提醒</span>
+              <div class="reminder-inline">
+                <input id="recurringReminderEnabledInput" type="checkbox" checked>
+                <input id="recurringReminderTimeInput" type="time" value="10:00">
+              </div>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="button primary" id="saveReminderSettingsButton" type="button">保存提醒设置</button>
+            <button class="button ghost" id="requestNotificationPermissionButton" type="button">启用系统通知权限</button>
+          </div>
+          <span class="inline-message" id="reminderSettingsMessage">你可以先只使用应用内轻提醒，不开启系统通知也没关系。</span>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">成长机制</p>
+            <h2>境界、神通与可解锁能力</h2>
+          </div>
+        </div>
+        <div class="realm-layout">
+          <div class="realm-list" id="realmList"></div>
+          <div class="unlock-board">
+            <h3>当前已掌握能力</h3>
+            <div class="unlock-list" id="profileAbilities"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">灵气来源</p>
+            <h2>你是如何一点点成长到这里的</h2>
+          </div>
+        </div>
+        <div class="mini-timeline" id="profileTimeline"></div>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">数据管理</p>
+            <h2>备份、恢复与重置</h2>
+          </div>
+          <span class="section-hint">先把数据安全做好，后续周报、预算和成就才值得长期积累。</span>
+        </div>
+        <div class="storage-directory-card">
+          <div>
+            <strong>当前数据目录</strong>
+            <p class="storage-directory-path" id="storageDirectoryPath">正在读取...</p>
+            <span class="inline-message" id="storageDirectoryMode">--</span>
+          </div>
+          <div class="data-tools">
+            <button class="button ghost" id="openStorageDirectoryButton" type="button">打开目录</button>
+            <button class="button primary" id="changeStorageDirectoryButton" type="button">更改目录</button>
+          </div>
+        </div>
+        <div class="budget-category-grid">
+          <article class="mini-event">
+            <strong>状态文件</strong>
+            <span id="storageStateFile">--</span>
+          </article>
+          <article class="mini-event">
+            <strong>恢复快照文件</strong>
+            <span id="storageSnapshotFile">--</span>
+          </article>
+          <article class="mini-event">
+            <strong>最近恢复快照</strong>
+            <span id="recoverySavedAt">暂无快照</span>
+          </article>
+          <article class="mini-event">
+            <strong>快照结构版本</strong>
+            <span id="recoverySchemaVersion">--</span>
+          </article>
+          <article class="mini-event">
+            <strong>快照大小</strong>
+            <span id="recoveryStateSize">--</span>
+          </article>
+        </div>
+        <div class="data-tools">
+          <button class="button primary" id="exportDataButton" type="button">导出备份</button>
+          <label class="button ghost file-trigger" for="importDataInput">导入备份</label>
+          <input id="importDataInput" type="file" accept="application/json">
+          <button class="button ghost danger" id="resetDemoButton" type="button">恢复空白初始状态</button>
+          <button class="button ghost danger" id="clearDataButton" type="button">清空本地数据</button>
+        </div>
+        <p class="inline-message" id="dataToolsMessage">建议在大改结构前先导出一次备份。</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

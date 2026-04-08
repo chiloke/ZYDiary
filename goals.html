@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#efe9df">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>ZY Diary · 目标打卡</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body data-page="goals">
+  <canvas id="dustCanvas" aria-hidden="true"></canvas>
+  <div class="page-shell">
+    <header class="topbar glass">
+      <a class="brand" href="./index.html">
+        <img class="brand-mark" src="./build/brand-logo.png" alt="ZY Diary logo">
+        <span class="brand-text">ZY Diary</span>
+      </a>
+      <nav class="nav">
+        <a class="nav-link" href="./index.html">总览</a>
+        <a class="nav-link" href="./daily.html">记录</a>
+        <a class="nav-link" href="./review.html">复盘</a>
+        <a class="nav-link active" href="./goals.html">目标</a>
+        <a class="nav-link" href="./ledger.html">账本</a>
+        <a class="nav-link" href="./reports.html">报告</a>
+        <a class="nav-link" href="./profile.html">档案</a>
+        <a class="nav-link" href="./help.html">帮助</a>
+      </nav>
+    </header>
+
+    <main class="content-grid">
+      <section class="panel glass">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">目标管理</p>
+            <h2>创建并维护你的修行事项</h2>
+          </div>
+        </div>
+        <form class="stack-form">
+          <div class="section-hint" id="goalEditorHint">当前正在创建新目标。</div>
+          <label>
+            <span>目标名称</span>
+            <input id="goalNameInput" type="text" placeholder="例如：深蹲 50 次">
+          </label>
+          <label>
+            <span>目标类别</span>
+            <select id="goalTypeInput">
+              <option value="学习类">学习类</option>
+              <option value="娱乐类">娱乐类</option>
+              <option value="运动类">运动类</option>
+              <option value="习惯类">习惯类</option>
+            </select>
+          </label>
+          <label>
+            <span>奖励转盘内容</span>
+            <textarea id="goalRewardInput" placeholder="每行一项，例如：&#10;今晚听一张喜欢的专辑&#10;去喝一杯好喝的饮料&#10;解锁 30 分钟自由娱乐"></textarea>
+          </label>
+          <label>
+            <span>惩罚转盘内容</span>
+            <textarea id="goalPenaltyInput" placeholder="每行一项，例如：&#10;做 20 个开合跳&#10;今晚少刷 20 分钟手机&#10;补做 10 分钟复盘"></textarea>
+          </label>
+          <div class="form-actions">
+            <button class="button primary" id="addGoalButton" type="button">新增目标</button>
+            <button class="button ghost" id="cancelGoalEditButton" type="button">取消编辑</button>
+            <span class="inline-message" id="goalFormMessage">你可以持续扩充自己的修行清单</span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel glass span-2">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">月历打卡</p>
+            <h1 class="page-title">目标、坚持与奖惩</h1>
+          </div>
+          <span class="section-hint">完成单个目标 +1 灵气，完成当日全部目标额外 +3 灵气</span>
+        </div>
+        <div class="streak-bar">
+          <article class="streak-card">
+            <span>连续坚持</span>
+            <strong id="goalStreakCount">0 天</strong>
+          </article>
+          <article class="streak-card">
+            <span>补签状态</span>
+            <strong id="repairStatus">未触发</strong>
+          </article>
+          <article class="streak-card">
+            <span>补签进度</span>
+            <strong id="repairProgress">0 / 3</strong>
+          </article>
+        </div>
+        <div class="goal-topbar">
+          <div class="goal-tabs" id="goalTabs"></div>
+          <div class="goal-status">
+            <span id="goalSummary">加载中...</span>
+          </div>
+        </div>
+        <div class="goal-actions">
+          <button class="button ghost" id="editGoalButton" type="button">编辑当前目标</button>
+          <button class="button ghost danger" id="deleteGoalButton" type="button">删除当前目标</button>
+          <span class="inline-message" id="goalManageMessage">可以随时调整目标描述和奖惩设置。</span>
+        </div>
+        <div class="goal-actions">
+          <button class="button ghost" id="toggleTodayButton" type="button">今日完成打卡</button>
+          <span class="inline-message" id="goalActionMessage">可以随时切换今天的完成状态</span>
+        </div>
+        <div class="goal-layout">
+          <div class="calendar-wrap">
+            <div class="calendar-header">
+              <div class="calendar-nav">
+                <button class="button ghost small" id="prevMonthButton" type="button">上月</button>
+                <strong id="calendarTitle">2026 年 4 月</strong>
+                <button class="button ghost small" id="nextMonthButton" type="button">下月</button>
+              </div>
+              <span>绿色表示已完成</span>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+          </div>
+          <aside class="wheel-wrap">
+            <div class="wheel-card">
+              <p class="wheel-title">今日判定</p>
+              <p class="wheel-copy" id="wheelStateText">根据今日打卡结果决定奖励或惩罚。</p>
+              <button class="button primary" id="spinButton" type="button">转动转盘</button>
+            </div>
+            <div class="wheel-card">
+              <p class="wheel-title">当前转盘池</p>
+              <div class="mini-timeline" id="wheelPoolList"></div>
+            </div>
+            <div class="wheel-card">
+              <p class="wheel-title">转盘结果</p>
+              <div class="result-pill" id="wheelResult">等待转动</div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+
+
