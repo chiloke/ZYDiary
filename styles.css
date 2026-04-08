@@ -516,6 +516,12 @@ body[data-page="profile"] .panel.span-2 {
   line-height: 1.25;
 }
 
+.countdown-emphasis {
+  transform-origin: left center;
+  animation: countdown-breathe 1.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
 .time-card em {
   display: block;
   margin-top: 8px;
@@ -2043,6 +2049,17 @@ body[data-page="profile"] .span-2 {
 @keyframes splash-caret {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
+}
+
+@keyframes countdown-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.96;
+  }
+  50% {
+    transform: scale(1.028);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 1080px) {

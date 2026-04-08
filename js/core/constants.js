@@ -32,17 +32,6 @@ export const REALMS = [
   { name: "圣人", aura: 680, ability: "解锁终局修行总谱" }
 ];
 
-function createGoalSeed(id, name, type, days, rewardPool, penaltyPool, currentDate) {
-  return {
-    id,
-    name,
-    type,
-    completedDates: days.map((day) => `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`),
-    rewardPool,
-    penaltyPool
-  };
-}
-
 export function getDefaultState(now = new Date()) {
   const today = startOfDay(now);
 

@@ -1,4 +1,4 @@
-import { $, formatClock, formatCountdown, formatDisplayDate, timeUntilEndOfDay, timeUntilEndOfMonth, timeUntilEndOfYear } from "../core/utils.js";
+import { $, formatClock, formatDayCountdownDetailed, formatDisplayDate, formatRemainingDays, timeUntilEndOfDay, timeUntilEndOfMonth, timeUntilEndOfYear } from "../core/utils.js";
 
 export function initHomePage(context) {
   if (document.body.dataset.page !== "home") return;
@@ -111,8 +111,8 @@ function renderHomeTimePanel(context) {
 
   if (dateText) dateText.textContent = formatDisplayDate(now);
   if (timeText) timeText.textContent = formatClock(now);
-  if (dayLeft) dayLeft.textContent = formatCountdown(timeUntilEndOfDay(now));
-  if (monthLeft) monthLeft.textContent = formatCountdown(timeUntilEndOfMonth(now));
-  if (yearLeft) yearLeft.textContent = formatCountdown(timeUntilEndOfYear(now));
+  if (dayLeft) dayLeft.textContent = formatDayCountdownDetailed(timeUntilEndOfDay(now));
+  if (monthLeft) monthLeft.textContent = formatRemainingDays(timeUntilEndOfMonth(now));
+  if (yearLeft) yearLeft.textContent = formatRemainingDays(timeUntilEndOfYear(now));
   if (visit) visit.textContent = `${context.state.visit.streak} \u5929`;
 }

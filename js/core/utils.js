@@ -67,6 +67,19 @@ export function formatCountdown(ms) {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
+export function formatDayCountdownDetailed(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours} 小时 ${minutes} 分钟 ${String(seconds).padStart(2, "0")} 秒`;
+}
+
+export function formatRemainingDays(ms) {
+  const totalDays = Math.max(0, Math.ceil(ms / 86400000));
+  return `剩 ${totalDays} 天`;
+}
+
 export function clone(value) {
   return JSON.parse(JSON.stringify(value));
 }

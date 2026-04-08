@@ -55,6 +55,7 @@ function applyGoalLogsToGoals(goals, goalLogs) {
 
 export function migrateLegacyState(state, now = new Date()) {
   const next = clone(state);
+  const previousSchemaVersion = Number(next.meta?.schemaVersion || 0);
   next.meta = {
     schemaVersion: SCHEMA_VERSION,
     exportedAt: next.meta?.exportedAt || "",
@@ -150,8 +151,43 @@ export function migrateLegacyState(state, now = new Date()) {
   );
 
   next.goals = applyGoalLogsToGoals(next.goals, next.goalLogs);
+  sanitizeLegacyDemoData(next, previousSchemaVersion);
 
   return next;
+}
+
+function sanitizeLegacyDemoData(state, previousSchemaVersion) {
+  const hasRecords = Boolean(
+    state.goals.length ||
+    state.goalLogs.length ||
+    state.expenses.length ||
+    state.recurringExpenses.length ||
+    state.reviewEntries.length ||
+    state.annotations.length ||
+    Object.keys(state.auraEvents || {}).length
+  );
+  if (!hasRecords) return;
+
+  const isLegacySchema = previousSchemaVersion > 0 && previousSchemaVersion < 5;
+  const isDefaultIdentity = (state.settings?.username || "").trim() === "修行者";
+  const hasNoImportTrace = !state.meta?.lastImportedAt;
+  const looksLikeFreshDevice = !state.visit?.lastDate || Number(state.visit?.streak || 0) <= 1;
+  const alreadyCleaned = Boolean(state.meta?.demoAutoCleanedAt);
+
+  if (!isLegacySchema || !isDefaultIdentity || !hasNoImportTrace || !looksLikeFreshDevice || alreadyCleaned) {
+    return;
+  }
+
+  state.goals = [];
+  state.goalLogs = [];
+  state.expenses = [];
+  state.recurringExpenses = [];
+  state.reviewEntries = [];
+  state.annotations = [];
+  state.auraEvents = {};
+  state.review = { win: "", block: "", next: "", summary: "", savedAt: "", rewardedDate: "" };
+  state.activeGoalId = "";
+  state.meta.demoAutoCleanedAt = new Date().toISOString();
 }
 
 export function mergeState(persisted, now = new Date()) {

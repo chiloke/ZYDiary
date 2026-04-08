@@ -180,7 +180,7 @@ export function initProfilePage(context) {
   });
 
   resetDemoButton.addEventListener("click", async () => {
-    if (!window.confirm("这会用演示数据覆盖当前本地数据，是否继续？")) return;
+    if (!window.confirm("这会恢复为空白初始状态并清空当前记录，是否继续？")) return;
     const nextState = mergeState(getDefaultState());
     context.replaceState(nextState);
     usernameInput.value = context.getUserName();
